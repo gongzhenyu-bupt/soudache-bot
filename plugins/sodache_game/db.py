@@ -1,7 +1,7 @@
 import sqlite3
 from typing import Dict, List, Optional
 from .models.game_models import User, Item
-from .connection_pool import ConnectionPool
+from .utils.connection_pool import ConnectionPool
 
 db_path = "game_data.db"
 db_timeout = 5  # 数据库操作超时时间（秒）

@@ -10,6 +10,7 @@ from nonebot.rule import to_me, Rule
 from nonebot.adapters.onebot.v11 import Bot, Event
 from .game_core import search, retreat, attack, user_init, check_status,check_retreat_status,users,stop_retreat, upgrade_attribute
 from nonebot.adapters.onebot.v11 import MessageSegment
+from .db import save_user
 from nonebot.rule import Rule
 from nonebot.typing import T_State
 import time
@@ -98,7 +99,7 @@ async def _retreat_handler(bot: Bot, event: Event):
     msg = MessageSegment.at(qq)+"\n"
     
     if success:
-        msg += f"撤离开始！10分钟后完成撤离并结算物品\n"
+        msg += f"撤离开始！{600-user.speed*30}秒后完成撤离并结算物品\n"
         if user.inventory:
             msg += "本次搜索已获取物品："
             for item in user.inventory:
@@ -124,6 +125,8 @@ async def _status_handler(bot: Bot, event: Event):
     # 构建回复消息
     msg = MessageSegment.at(qq)+"\n"
     msg += f"当前状态：{status_info['status_text']}\n"
+    msg+=f"哈哈币：{status_info['gold']}\n"
+    msg+=f"攻击力：{user.attack},防御力：{user.defense}"
     if(status_info['status']==1):
         msg+=f"（距离获得下一件物品还剩{300-(int(time.time())-user.search_start_time)%300}秒）\n"
     elif(status_info['status']==2):
@@ -131,9 +134,7 @@ async def _status_handler(bot: Bot, event: Event):
             msg+=f"本次撤离带出物品价值：{total_value}哈哈币\n"
             msg+=f"撤离成功！\n"
         else:
-            msg+=f"（距离撤离完成还剩{600-int(time.time())+user.retreat_start_time}秒）\n"
-    elif(status_info['status']==0):
-        msg+=f"哈哈币：{status_info['gold']}"
+            msg+=f"（距离撤离完成还剩{600-user.speed*30-int(time.time())+user.retreat_start_time}秒）\n"
     if user.status!=0:
         msg += f"背包物品数量：{status_info['bag_items_nums']}/{user.backpack_capacity}\n"
         if user.inventory:
@@ -257,22 +258,59 @@ async def _receive_upgrade_amount(bot: Bot, event: Event,state: T_State):
     await train_cmd.finish(response)
 
 
-# have_buchanged_user = set()
-# # 使用on_command并添加精确匹配规则
-# buchang_cmd = on_command("补偿。。。", rule=is_exact_command("补偿。。。"), priority=10)
-# @buchang_cmd.handle()
-# async def _buchang_handler(bot: Bot, event: Event):
-#     """
-#     处理搜索命令
-#     """
-#     qq = event.get_user_id()
-#     user = users.get(qq)
-#     if qq in have_buchanged_user:
-#         user.gold -= 100
-#         await buchang_cmd.finish(MessageSegment.at(qq) + "\n贪婪之罪，扣100哈哈币")
-#     user.gold += 5000
-#     msg = MessageSegment.at(qq)+"\n"
-#     msg += f"补偿成功！当前哈哈币：{user.gold}"
-#     have_buchanged_user.add(qq)
-#     user.save()
-#     await buchang_cmd.finish(msg)
+# 使用on_command并添加精确匹配规则
+buchang_cmd = on_command("加哈哈币", priority=10)
+@buchang_cmd.handle()
+async def _buchang_handler(bot: Bot, event: Event):
+    """
+    处理加哈哈币命令
+    格式：加哈哈币 cq:at815953227 5000
+    """
+    qq = event.get_user_id()
+    message = event.get_message()
+
+    # 解析目标用户
+    target_qq = None
+    for seg in message:
+        if seg.type == "at":
+            target_qq = seg.data.get("qq")
+            break
+    
+    # 如果没有找到@用户，则无法执行
+    if not target_qq:
+        await buchang_cmd.finish(MessageSegment.at(qq) + "\n请正确艾特目标用户")
+    
+    # 解析金额参数
+    amount = None
+    plain_text = event.get_message().extract_plain_text().strip()
+    
+    # 尝试从文本中提取数字金额
+    words = plain_text.split()
+    for word in words:
+        if word.isdigit():
+            amount = int(word)
+            break
+    
+    # 如果没有找到有效金额，则无法执行
+    if amount is None or amount <= 0:
+        await buchang_cmd.finish(MessageSegment.at(qq) + "\n请输入有效金额")
+    
+    # 检查是否是管理员操作
+    if qq != "815953227":
+        user = users.get(qq)
+        user.gold -= 100
+        save_user(user)
+        await buchang_cmd.finish(MessageSegment.at(qq) + "\n僭越之罪，扣100哈哈币")
+
+    # 获取并更新目标用户的哈哈币
+    target_user = users.get(target_qq)
+    if not target_user:
+        target_user = user_init(target_qq)
+    
+    target_user.gold += amount
+    save_user(target_user)
+    
+    # 发送成功消息
+    msg = MessageSegment.at(target_qq) + "\n"
+    msg += f"获得{amount}哈哈币！当前哈哈币：{target_user.gold}"
+    await buchang_cmd.finish(msg)
