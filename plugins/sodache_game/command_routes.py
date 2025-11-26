@@ -130,11 +130,11 @@ async def _status_handler(bot: Bot, event: Event):
     if(status_info['status']==1):
         msg+=f"（距离获得下一件物品还剩{360-(int(time.time())-user.search_start_time)%360}秒）\n"
     elif(status_info['status']==2):
-        if(600-user.speed*30-int(time.time())+user.retreat_start_time<0):
+        if(600-user.speed*40-int(time.time())+user.retreat_start_time<0):
             msg+=f"本次撤离带出物品价值：{total_value}哈哈币\n"
             msg+=f"撤离成功！\n"
         else:
-            msg+=f"（距离撤离完成还剩{600-user.speed*30-int(time.time())+user.retreat_start_time}秒）\n"
+            msg+=f"（距离撤离完成还剩{600-user.speed*40-int(time.time())+user.retreat_start_time}秒）\n"
     if user.status!=0:
         msg += f"背包物品数量：{status_info['bag_items_nums']}/{user.backpack_capacity}\n"
         if user.inventory:
