@@ -128,7 +128,7 @@ async def _status_handler(bot: Bot, event: Event):
     msg+=f"哈哈币：{status_info['gold']}\n"
     msg+=f"攻击力：{user.attack},防御力：{user.defense}\n"
     if(status_info['status']==1):
-        msg+=f"（距离获得下一件物品还剩{300-(int(time.time())-user.search_start_time)%300}秒）\n"
+        msg+=f"（距离获得下一件物品还剩{360-(int(time.time())-user.search_start_time)%360}秒）\n"
     elif(status_info['status']==2):
         if(600-user.speed*30-int(time.time())+user.retreat_start_time<0):
             msg+=f"本次撤离带出物品价值：{total_value}哈哈币\n"

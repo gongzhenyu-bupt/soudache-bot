@@ -110,8 +110,8 @@ def extract_items_by_time(qq: str) -> List[Item]:
     current_time = int(time.time())
     elapsed = current_time - user.search_start_time
     
-    # 每300秒抽取一件物品
-    items_to_extract = elapsed // 300
+    # 每360秒抽取一件物品
+    items_to_extract = elapsed // 360
     if items_to_extract <= 0:
         return user.inventory
     
@@ -119,8 +119,8 @@ def extract_items_by_time(qq: str) -> List[Item]:
     quality_weights = {
         0: 60,   # 普通 (60%)
         1: 25,   # 稀有 (25%)
-        2: 15,   # 史诗 (10%)
-        3: 3     # 传说 (5%)
+        2: 10,   # 史诗 (10%)
+        3: 5     # 传说 (5%)
     }
     
     # 创建加权列表
@@ -164,7 +164,7 @@ def extract_items_by_time(qq: str) -> List[Item]:
     # 在抽取完成后，更新搜索时间到最近一次抽取的位置，避免重复抽取
     # 只有在确实抽取了物品的情况下才更新时间
     if items_to_extract > 0:
-        user.search_start_time = int(time.time()) - elapsed%300
+        user.search_start_time = int(time.time()) - elapsed%360
     
     # 保存用户数据和物品到数据库
     save_user(user)
@@ -273,7 +273,7 @@ def attack(attacker_qq: str, defender_qq: str) -> str:
         # 损失哈哈币 = 防守方攻击力 - 进攻方防御力，最低损失10哈哈币
         damage = max(10, defender.attack - attacker.defense)*2
         attacker.gold = attacker.gold - damage
-        attacker.attack_cooldown_end_time +=180
+        attacker.attack_cooldown_end_time +=120
         # 保存进攻方数据到数据库
         save_user(attacker)
         
