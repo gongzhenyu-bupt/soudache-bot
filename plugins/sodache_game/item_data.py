@@ -58,17 +58,17 @@ legendary_items = [
     Item(id="item_philosophers_stone", name="非洲之心", value=20000 , quality=3, weight=1),
     Item(id="item_dragon_slayer", name="量子存储", value=1500 , quality=3, weight=50),
     Item(id="item_amulet_of_immortality", name="复苏呼吸机", value=10000 , quality=3, weight=5),
-    Item(id="item_holy_armor", name="光盘", value=2500 , quality=3, weight=50),
-    Item(id="item_holy_armor", name="劳力士", value=2000 , quality=3, weight=50),
-    Item(id="item_gilded_card", name="鎏金卡牌", value=2000 , quality=3, weight=50),  # 调整为与劳力士相同
+    Item(id="item_holy_armor", name="光盘", value=1000 , quality=3, weight=50),
+    Item(id="item_holy_armor", name="劳力士", value=1200 , quality=3, weight=50),
+    Item(id="item_gilded_card", name="鎏金卡牌", value=1100 , quality=3, weight=50),  # 调整为与劳力士相同
     Item(id="item_impressionist_painting", name="印象派名画", value=2000 , quality=3, weight=10),  # 调整为合理值
     Item(id="item_white_porcelain_vase", name="白瓷净瓶", value=1800 , quality=3, weight=12),  # 调整为合理值
     Item(id="item_golden_gazelle", name="黄金瞪羚", value=2200 , quality=3, weight=30),  # 调整为与军用炮弹相同
-    Item(id="item_ecmo", name="ECMO", value=1600 , quality=3, weight=13),  # 调整为合理值
+    Item(id="item_ecmo", name="ECMO", value=2300 , quality=3, weight=13),  # 调整为合理值
     Item(id="item_mandel_supercomputer", name="曼德尔超算单元", value=1500 , quality=3, weight=15),  # 调整为合理值
-    Item(id="item_portable_radar", name="便携军用雷达", value=1400 , quality=3, weight=18),  # 调整为合理值
-    Item(id="item_military_terminal", name="军用信息终端", value=3000 , quality=3, weight=50),  # 调整为合理值
-    Item(id="item_main_battle_tank", name="主战坦克模型", value=1500 , quality=3, weight=15),  # 调整为合理值
+    Item(id="item_portable_radar", name="便携军用雷达", value=3000 , quality=3, weight=18),  # 调整为合理值
+    Item(id="item_military_terminal", name="军用信息终端", value=1300 , quality=3, weight=50),  # 调整为合理值
+    Item(id="item_main_battle_tank", name="主战坦克模型", value=2000 , quality=3, weight=15),  # 调整为合理值
     Item(id="item_infantry_fighting_vehicle", name="步战车模型", value=1300 , quality=3, weight=20),  # 调整为合理值
 ]
 
